@@ -12,7 +12,9 @@
         <module>rpc-common</module>
         <module>rpc-consumer</module>
         <module>rpc-provider</module>
+        <!-- 简化版rpc框架，完整版consumer和provider模块 xml使用rpc-core-->
         <module>rpc-system</module>
+        <module>rpc-core</module>
     </modules>
 
     <properties>
@@ -20,6 +22,8 @@
         <maven.compiler.target>8</maven.compiler.target>
         <hutool-version>5.8.16</hutool-version>
         <lombok-version>1.18.30</lombok-version>
+        <logback-version>1.3.12</logback-version>
+        <junit-version>RELEASE</junit-version>
     </properties>
 
     <dependencyManagement>
@@ -33,6 +37,17 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit-version}</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

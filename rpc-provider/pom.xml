@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>xiaofei.site</groupId>
-            <artifactId>rpc-system</artifactId>
+            <artifactId>rpc-core</artifactId>
             <version>1.0.0</version>
         </dependency>
         <dependency>
