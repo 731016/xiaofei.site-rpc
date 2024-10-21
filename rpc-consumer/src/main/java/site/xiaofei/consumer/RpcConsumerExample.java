@@ -13,9 +13,9 @@ public class RpcConsumerExample {
 
     public static void main(String[] args) {
         //静态代理
-        UserService userService = new UserServiceProxy();
+//        UserService userService = new UserServiceProxy();
         //jdk动态代理
-//        UserService userService = ServiceProxyFactory.getProxy(UserService.class);
+        UserService userService = ServiceProxyFactory.getProxy(UserService.class);
 
         User user = new User();
         user.setName("土澳菲");
@@ -25,5 +25,7 @@ public class RpcConsumerExample {
         }else{
             System.out.println("user is null!");
         }
+        short number = userService.getNumber();
+        System.out.println(number);
     }
 }

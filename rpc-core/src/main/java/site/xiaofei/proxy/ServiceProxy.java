@@ -2,6 +2,8 @@ package site.xiaofei.proxy;
 
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
+import site.xiaofei.RpcApplication;
+import site.xiaofei.config.RpcConfig;
 import site.xiaofei.model.RpcRequest;
 import site.xiaofei.model.RpcResponse;
 import site.xiaofei.serializer.JdkSerializer;
@@ -32,8 +34,13 @@ public class ServiceProxy implements InvocationHandler {
         try {
             byte[] bodyBytes = serializer.serializer(rpcRequest);
             byte[] resultBytes;
-            //todo 地址需要使用注册中心和服务发现机制解决
-            HttpResponse httpResponse = HttpRequest.post("http://localhost:8080")
+            //地址需要使用注册中心和服务发现机制解决
+            RpcConfig rpcConfig = RpcApplication.getRpcConfig();
+            if (rpcConfig == null){
+                throw new RuntimeException("get rpcConfig error");
+            }
+            String remoteUrl = String.format("http://%s:%s", rpcConfig.getServerHost(), rpcConfig.getServerPort());
+            HttpResponse httpResponse = HttpRequest.post(remoteUrl)
                     .body(bodyBytes)
                     .execute();
             resultBytes = httpResponse.bodyBytes();
