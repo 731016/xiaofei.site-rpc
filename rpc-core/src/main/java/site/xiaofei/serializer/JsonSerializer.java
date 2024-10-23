@@ -1,7 +1,6 @@
 package site.xiaofei.serializer;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import site.xiaofei.model.RpcRequest;
 import site.xiaofei.model.RpcResponse;

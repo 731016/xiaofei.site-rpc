@@ -8,6 +8,7 @@ import site.xiaofei.model.RpcRequest;
 import site.xiaofei.model.RpcResponse;
 import site.xiaofei.serializer.JdkSerializer;
 import site.xiaofei.serializer.Serializer;
+import site.xiaofei.serializer.SerializerFactory;
 
 import javax.xml.ws.Service;
 import java.io.IOException;
@@ -24,11 +25,7 @@ public class ServiceProxy implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         //指定序列化器
-        Serializer serializer = null;
-        ServiceLoader<Serializer> serviceLoader = ServiceLoader.load(Serializer.class);
-        for (Serializer service : serviceLoader) {
-            serializer = service;
-        }
+        final Serializer serializer = SerializerFactory.getInstance(RpcApplication.getRpcConfig().getSerializer());
 
         //给rpc框架发送请求
         RpcRequest rpcRequest = RpcRequest.builder()

@@ -1,0 +1,4 @@
+jdk=site.xiaofei.serializer.JdkSerializer
+json=site.xiaofei.serializer.JsonSerializer
+kryo=site.xiaofei.serializer.KryoSerializer
+hessian=site.xiaofei.serializer.HessianSerializer

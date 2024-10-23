@@ -4,11 +4,13 @@ import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
+import site.xiaofei.RpcApplication;
 import site.xiaofei.model.RpcRequest;
 import site.xiaofei.model.RpcResponse;
 import site.xiaofei.registry.LocalRegistry;
 import site.xiaofei.serializer.JdkSerializer;
 import site.xiaofei.serializer.Serializer;
+import site.xiaofei.serializer.SerializerFactory;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -29,7 +31,7 @@ public class HttpServerHandler implements Handler<HttpServerRequest> {
     @Override
     public void handle(HttpServerRequest request) {
         //指定序列化器
-        JdkSerializer serializer = new JdkSerializer();
+        final Serializer serializer = SerializerFactory.getInstance(RpcApplication.getRpcConfig().getSerializer());
 
         //记录日志
         System.out.println(String.format("receive request ：%s %s", request.method(), request.uri()));
