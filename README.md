@@ -2463,3 +2463,54 @@ public class SerializerFactory {
 使用静态代码块，在工厂首次加载时，调用SpiLoader.load加载序列化接口的实现类，就可以通过getInstance获取指定的实现类对象
 
 ### 测试
+
+#### SPI加载测试
+
+测试custom和system下的SPI配置文件是否成功加载
+
+![image-20241024204041687](https://note-1259190304.cos.ap-chengdu.myqcloud.com/noteimage-20241024204041687.png)
+
+测试正常key和异常的情况，比如不存在key
+
+测试key相同时，自定义配置能否覆盖系统配置
+
+
+
+#### 完整测试
+
+（1）修改消费者和生产者配置文件，指定不同的序列化器
+
+```properties
+rpc.name=xiaofei.site-rpc
+rpc.version=1.0
+rpc.serverPort=8082
+rpc.mock=false
+rpc.serializer=hessian
+```
+
+(2)启动生产者和消费者，验证能否正常完成请求
+
+
+
+#### 自定义序列化器
+
+1.写一个类实现Serializer接口
+
+2.在custom目录下编写spi配置文件，加载该类
+
+
+
+### 扩展
+
+（1）实现更多不同协议的序列化器
+
+（2）序列化器工厂可使用懒加载创建序列化器实例
+
+（3）SPI loader支持懒加载，获取实例时才加载对应的类
+
+
+
+## 注册中心基本实现
+
+
+
