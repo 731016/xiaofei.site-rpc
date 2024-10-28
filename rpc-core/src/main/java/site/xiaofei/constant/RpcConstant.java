@@ -12,6 +12,11 @@ public interface RpcConstant {
      */
     String DEFAULT_CONFIG_PREFIX = "rpc";
 
+    /**
+     * 默认服务版本
+     */
+    String DEFAULT_SERVICE_VERSION = "1.0";
+
     String DEFAULT_CONFIG_FILESUFFIX = ".properties";
     String CONFIG_YML_FILESUFFIX = ".yml";
     String CONFIG_YAML_FILESUFFIX = ".yaml";
