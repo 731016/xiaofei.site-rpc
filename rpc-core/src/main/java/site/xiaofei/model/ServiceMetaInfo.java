@@ -1,5 +1,7 @@
 package site.xiaofei.model;
 
+import cn.hutool.core.util.StrUtil;
+import lombok.Data;
 import site.xiaofei.constant.RpcConstant;
 
 /**
@@ -7,6 +9,7 @@ import site.xiaofei.constant.RpcConstant;
  * @description 服务元信息（注册信息）
  * @date 2024/10/28
  */
+@Data
 public class ServiceMetaInfo {
 
     /**
@@ -52,5 +55,17 @@ public class ServiceMetaInfo {
      */
     public String getServiceNodeKey() {
         return String.format("%s/%s:%s", getServiceKey(), serviceHost, servicePost);
+    }
+
+    /**
+     * 获取完整服务地址
+     *
+     * @return
+     */
+    public String getServiceAddress() {
+        if (!StrUtil.contains(serviceHost, "http")) {
+            return String.format("http://%s:%s", serviceHost, servicePost);
+        }
+        return String.format("%s:%s", serviceHost, servicePost);
     }
 }

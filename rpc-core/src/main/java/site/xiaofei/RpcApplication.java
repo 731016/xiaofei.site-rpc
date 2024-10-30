@@ -1,8 +1,11 @@
 package site.xiaofei;
 
 import lombok.extern.slf4j.Slf4j;
+import site.xiaofei.config.RegistryConfig;
 import site.xiaofei.config.RpcConfig;
 import site.xiaofei.constant.RpcConstant;
+import site.xiaofei.registry.Registry;
+import site.xiaofei.registry.RegistryFactory;
 import site.xiaofei.utils.ConfigUtils;
 
 /**
@@ -24,6 +27,12 @@ public class RpcApplication {
     public static void init(RpcConfig newRpcConfig) {
         rpcConfig = newRpcConfig;
         log.info("rpc init,config = {}", newRpcConfig.toString());
+
+        //注册中心初始化
+        RegistryConfig registryConfig = rpcConfig.getRegistryConfig();
+        Registry registryInstance = RegistryFactory.getInstance(registryConfig.getRegistry());
+        registryInstance.init(registryConfig);
+        log.info("registry init,config = {}", registryConfig);
     }
 
     /**

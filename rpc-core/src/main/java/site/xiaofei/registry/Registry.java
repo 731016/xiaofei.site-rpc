@@ -29,7 +29,7 @@ public interface Registry {
      * 注销服务（服务端）
      * @param serviceMetaInfo
      */
-    void unRegister(ServiceMetaInfo serviceMetaInfo);
+    void unRegister(ServiceMetaInfo serviceMetaInfo) throws ExecutionException, InterruptedException;
 
     /**
      * 服务发现（获取某服务的所有节点，消费端）

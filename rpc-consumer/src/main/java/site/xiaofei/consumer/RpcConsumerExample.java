@@ -25,7 +25,7 @@ public class RpcConsumerExample {
         }else{
             System.out.println("user is null!");
         }
-        short number = userService.getMockNumber();
-        System.out.println(number);
+//        short number = userService.getMockNumber();
+//        System.out.println(number);
     }
 }

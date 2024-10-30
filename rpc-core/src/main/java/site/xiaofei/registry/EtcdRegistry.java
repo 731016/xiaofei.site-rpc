@@ -72,7 +72,7 @@ public class EtcdRegistry implements Registry {
 
     @Override
     public void init(RegistryConfig registryConfig) {
-        Client.builder()
+        client = Client.builder()
                 .endpoints(registryConfig.getAddress())
                 .connectTimeout(Duration.ofMillis(registryConfig.getTimeout()))
                 .build();
@@ -84,8 +84,8 @@ public class EtcdRegistry implements Registry {
         //创建 lease和kv客户端
         Lease leaseClient = client.getLeaseClient();
 
-        //创建一个30s的租约
-        long leaseId = leaseClient.grant(30).get().getID();
+        //创建一个5分钟s的租约
+        long leaseId = leaseClient.grant(300).get().getID();
 
         //设置要存储的键值对
         String registryKey = ETCD_ROOT_PATH + serviceMetaInfo.getServiceNodeKey();
@@ -98,14 +98,14 @@ public class EtcdRegistry implements Registry {
     }
 
     @Override
-    public void unRegister(ServiceMetaInfo serviceMetaInfo) {
-        kvClient.delete(ByteSequence.from(ETCD_ROOT_PATH + serviceMetaInfo.getServiceNodeKey(), StandardCharsets.UTF_8));
+    public void unRegister(ServiceMetaInfo serviceMetaInfo) throws ExecutionException, InterruptedException {
+        kvClient.delete(ByteSequence.from(ETCD_ROOT_PATH + serviceMetaInfo.getServiceNodeKey(), StandardCharsets.UTF_8)).get();
     }
 
     @Override
     public List<ServiceMetaInfo> serviceDiscovery(String serviceKey) {
         //前缀搜索，结尾一定要加‘/’
-        String searchPrefix = ETCD_ROOT_PATH + "/";
+        String searchPrefix = ETCD_ROOT_PATH + serviceKey + "/";
 
         try {
             //前缀搜索

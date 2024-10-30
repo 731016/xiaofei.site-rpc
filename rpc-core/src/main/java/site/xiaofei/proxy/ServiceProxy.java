@@ -1,11 +1,16 @@
 package site.xiaofei.proxy;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import site.xiaofei.RpcApplication;
 import site.xiaofei.config.RpcConfig;
+import site.xiaofei.constant.RpcConstant;
 import site.xiaofei.model.RpcRequest;
 import site.xiaofei.model.RpcResponse;
+import site.xiaofei.model.ServiceMetaInfo;
+import site.xiaofei.registry.Registry;
+import site.xiaofei.registry.RegistryFactory;
 import site.xiaofei.serializer.JdkSerializer;
 import site.xiaofei.serializer.Serializer;
 import site.xiaofei.serializer.SerializerFactory;
@@ -14,6 +19,7 @@ import javax.xml.ws.Service;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.ServiceLoader;
 
 /**
@@ -28,8 +34,9 @@ public class ServiceProxy implements InvocationHandler {
         final Serializer serializer = SerializerFactory.getInstance(RpcApplication.getRpcConfig().getSerializer());
 
         //给rpc框架发送请求
+        String serviceName = method.getDeclaringClass().getName();
         RpcRequest rpcRequest = RpcRequest.builder()
-                .serviceName(method.getDeclaringClass().getName())
+                .serviceName(serviceName)
                 .methodName(method.getName())
                 .paramTypes(method.getParameterTypes())
                 .args(args)
@@ -38,12 +45,23 @@ public class ServiceProxy implements InvocationHandler {
         try {
             byte[] bodyBytes = serializer.serializer(rpcRequest);
             byte[] resultBytes;
-            //地址需要使用注册中心和服务发现机制解决
             RpcConfig rpcConfig = RpcApplication.getRpcConfig();
-            if (rpcConfig == null){
+            if (rpcConfig == null) {
                 throw new RuntimeException("get rpcConfig error");
             }
-            String remoteUrl = String.format("http://%s:%s", rpcConfig.getServerHost(), rpcConfig.getServerPort());
+            //从注册中心获取服务地址
+            Registry registry = RegistryFactory.getInstance(rpcConfig.getRegistryConfig().getRegistry());
+            ServiceMetaInfo serviceMetaInfo = new ServiceMetaInfo();
+            serviceMetaInfo.setServiceName(serviceName);
+            serviceMetaInfo.setServiceVersion(RpcConstant.DEFAULT_SERVICE_VERSION);
+            List<ServiceMetaInfo> serviceMetaInfoList = registry.serviceDiscovery(serviceMetaInfo.getServiceKey());
+            if (CollUtil.isEmpty(serviceMetaInfoList)) {
+                throw new RuntimeException("not find service address");
+            }
+            //暂时先取第一个
+            ServiceMetaInfo selectedServiceMetaInfo = serviceMetaInfoList.get(0);
+
+            String remoteUrl = selectedServiceMetaInfo.getServiceAddress();
             HttpResponse httpResponse = HttpRequest.post(remoteUrl)
                     .body(bodyBytes)
                     .execute();
