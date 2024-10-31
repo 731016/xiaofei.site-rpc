@@ -34,19 +34,19 @@ public class RegistryTest {
         serviceMetaInfo.setServicePost(1234);
         registry.register(serviceMetaInfo);
 
-        serviceMetaInfo = new ServiceMetaInfo();
-        serviceMetaInfo.setServiceName("myService");
-        serviceMetaInfo.setServiceVersion("1.0");
-        serviceMetaInfo.setServiceHost("localhost");
-        serviceMetaInfo.setServicePost(1235);
-        registry.register(serviceMetaInfo);
+//        serviceMetaInfo = new ServiceMetaInfo();
+//        serviceMetaInfo.setServiceName("myService");
+//        serviceMetaInfo.setServiceVersion("1.0");
+//        serviceMetaInfo.setServiceHost("localhost");
+//        serviceMetaInfo.setServicePost(1235);
+//        registry.register(serviceMetaInfo);
 
-        serviceMetaInfo = new ServiceMetaInfo();
-        serviceMetaInfo.setServiceName("myService");
-        serviceMetaInfo.setServiceVersion("2.0");
-        serviceMetaInfo.setServiceHost("localhost");
-        serviceMetaInfo.setServicePost(1234);
-        registry.register(serviceMetaInfo);
+//        serviceMetaInfo = new ServiceMetaInfo();
+//        serviceMetaInfo.setServiceName("myService");
+//        serviceMetaInfo.setServiceVersion("2.0");
+//        serviceMetaInfo.setServiceHost("localhost");
+//        serviceMetaInfo.setServicePost(1234);
+//        registry.register(serviceMetaInfo);
     }
 
     @Test
@@ -67,5 +67,13 @@ public class RegistryTest {
         String serviceKey = serviceMetaInfo.getServiceKey();
         List<ServiceMetaInfo> serviceMetaInfoList = registry.serviceDiscovery(serviceKey);
         Assert.assertNotNull(serviceMetaInfoList);
+    }
+
+    @Test
+    public void heartBeat() throws ExecutionException, InterruptedException {
+        //init中已经执行心跳检测
+        register();
+        //阻塞1分钟
+        Thread.sleep(60 * 1000L);
     }
 }
