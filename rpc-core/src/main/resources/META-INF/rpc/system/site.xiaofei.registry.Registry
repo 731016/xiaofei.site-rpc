@@ -1,1 +1,2 @@
 etcd=site.xiaofei.registry.EtcdRegistry
+zookeeper=site.xiaofei.registry.ZookeeperRegistry

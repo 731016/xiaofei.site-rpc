@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author tuaofei
- * @description TODO
+ * @description Etcd注册中心
  * @date 2024/10/25
  */
 @Slf4j
@@ -74,9 +74,15 @@ public class EtcdRegistry implements Registry {
     private final Set<String> localRegisterNodeKeySet = new HashSet<>();
 
     /**
-     * 注册中心服务缓存
+     * 注册中心服务缓存（只支持单个服务缓存，已废弃，请使用下方的 RegistryServiceMultiCache）
      */
+    @Deprecated
     private final RegistryServiceCache registryServiceCache = new RegistryServiceCache();
+
+    /**
+     * 注册中心服务缓存（支持多个服务键）
+     */
+    private final RegistryServiceMultiCache registryServiceMultiCache = new RegistryServiceMultiCache();
 
     /**
      * 正在监听的key集合
@@ -90,7 +96,7 @@ public class EtcdRegistry implements Registry {
     /**
      * 根节点
      */
-    private static final String ETCD_ROOT_PATH = "/rpc/";
+    private static final String ETCD_ROOT_PATH = "/rpc/etcd";
 
     @Override
     public void init(RegistryConfig registryConfig) {
@@ -103,7 +109,7 @@ public class EtcdRegistry implements Registry {
     }
 
     @Override
-    public void register(ServiceMetaInfo serviceMetaInfo) throws ExecutionException, InterruptedException {
+    public void register(ServiceMetaInfo serviceMetaInfo) throws Exception {
         //创建 lease和kv客户端
         Lease leaseClient = client.getLeaseClient();
 
@@ -134,7 +140,8 @@ public class EtcdRegistry implements Registry {
     @Override
     public List<ServiceMetaInfo> serviceDiscovery(String serviceKey) {
         //优先从缓存获取服务
-        List<ServiceMetaInfo> cachedServiceMetaInfoList = registryServiceCache.readCahce();
+        //List<ServiceMetaInfo> cachedServiceMetaInfoList = registryServiceCache.readCahce();
+        List<ServiceMetaInfo> cachedServiceMetaInfoList = registryServiceMultiCache.readCache(serviceKey);
         if (CollUtil.isNotEmpty(cachedServiceMetaInfoList)) {
             return cachedServiceMetaInfoList;
         }
@@ -156,7 +163,8 @@ public class EtcdRegistry implements Registry {
                         return JSONUtil.toBean(value, ServiceMetaInfo.class);
                     }).collect(Collectors.toList());
             //写入服务缓存
-            registryServiceCache.writeCache(serviceMetaInfoList);
+            //registryServiceCache.writeCache(serviceMetaInfoList);
+            registryServiceMultiCache.writeCache(serviceKey, serviceMetaInfoList);
             return serviceMetaInfoList;
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -207,7 +215,7 @@ public class EtcdRegistry implements Registry {
                     ServiceMetaInfo serviceMetaInfo = JSONUtil.toBean(value, ServiceMetaInfo.class);
                     register(serviceMetaInfo);
                     log.info(String.format("服务：%s已续签", key));
-                } catch (InterruptedException | ExecutionException e) {
+                } catch (Exception e) {
                     throw new RuntimeException(key + "续签失败", e);
                 }
             }
@@ -230,7 +238,8 @@ public class EtcdRegistry implements Registry {
                         //key删除时触发
                         case DELETE:
                             //清理注册服务缓存
-                            registryServiceCache.clearCache();
+                            //registryServiceCache.clearCache();
+                            registryServiceMultiCache.clearCache(serviceNodeKey);
                             log.warn("服务缓存：%s 清除");
                             break;
                         case PUT:

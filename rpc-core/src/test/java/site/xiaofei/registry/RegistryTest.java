@@ -26,7 +26,7 @@ public class RegistryTest {
     }
 
     @Test
-    public void register() throws ExecutionException, InterruptedException {
+    public void register() throws Exception {
         ServiceMetaInfo serviceMetaInfo = new ServiceMetaInfo();
         serviceMetaInfo.setServiceName("myService");
         serviceMetaInfo.setServiceVersion("1.0");
@@ -70,7 +70,7 @@ public class RegistryTest {
     }
 
     @Test
-    public void heartBeat() throws ExecutionException, InterruptedException {
+    public void heartBeat() throws Exception {
         //init中已经执行心跳检测
         register();
         //阻塞1分钟

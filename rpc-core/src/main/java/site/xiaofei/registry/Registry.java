@@ -23,7 +23,7 @@ public interface Registry {
      * 注册服务（服务端）
      * @param serviceMetaInfo
      */
-    void register(ServiceMetaInfo serviceMetaInfo) throws ExecutionException, InterruptedException;
+    void register(ServiceMetaInfo serviceMetaInfo) throws Exception;
 
     /**
      * 注销服务（服务端）

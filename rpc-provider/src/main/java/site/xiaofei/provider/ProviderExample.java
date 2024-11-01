@@ -38,7 +38,7 @@ public class ProviderExample {
         serviceMetaInfo.setServicePost(rpcConfig.getServerPort());
         try {
             registry.register(serviceMetaInfo);
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
