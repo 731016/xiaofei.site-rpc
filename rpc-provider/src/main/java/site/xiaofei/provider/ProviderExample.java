@@ -10,6 +10,7 @@ import site.xiaofei.registry.Registry;
 import site.xiaofei.registry.RegistryFactory;
 import site.xiaofei.server.HttpServer;
 import site.xiaofei.server.VertxHttpServer;
+import site.xiaofei.server.tcp.VertxTcpServer;
 
 import java.util.concurrent.ExecutionException;
 
@@ -43,7 +44,11 @@ public class ProviderExample {
         }
 
         //启动web服务
-        HttpServer httpServer = new VertxHttpServer();
-        httpServer.doStart(RpcApplication.getRpcConfig().getServerPort());
+//        HttpServer httpServer = new VertxHttpServer();
+//        httpServer.doStart(RpcApplication.getRpcConfig().getServerPort());
+
+        //启动tcp服务
+        VertxTcpServer tcpServer = new VertxTcpServer();
+        tcpServer.doStart(RpcApplication.getRpcConfig().getServerPort());
     }
 }
