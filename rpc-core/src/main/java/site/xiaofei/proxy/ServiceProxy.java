@@ -11,6 +11,8 @@ import io.vertx.core.net.NetSocket;
 import site.xiaofei.RpcApplication;
 import site.xiaofei.config.RpcConfig;
 import site.xiaofei.constant.RpcConstant;
+import site.xiaofei.loadbalancer.LoadBalancer;
+import site.xiaofei.loadbalancer.LoadBalancerFactory;
 import site.xiaofei.model.RpcRequest;
 import site.xiaofei.model.RpcResponse;
 import site.xiaofei.model.ServiceMetaInfo;
@@ -26,7 +28,9 @@ import javax.xml.ws.Service;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.CompletableFuture;
 
@@ -65,8 +69,15 @@ public class ServiceProxy implements InvocationHandler {
                 throw new RuntimeException("not find service address");
             }
             //暂时先取第一个
-            ServiceMetaInfo selectedServiceMetaInfo = serviceMetaInfoList.get(0);
+            //ServiceMetaInfo selectedServiceMetaInfo = serviceMetaInfoList.get(0);
+            //负载均衡
+            LoadBalancer loadBalancer = LoadBalancerFactory.getInstance(rpcConfig.getLoadBalancer());
+            Map<String, Object> requestParamMap = new HashMap<>();
+            requestParamMap.put("methodName", rpcRequest.getMethodName());
+            ServiceMetaInfo selectedServiceMetaInfo = loadBalancer.select(requestParamMap, serviceMetaInfoList);
+            System.out.println("获取节点：" + selectedServiceMetaInfo);
 
+            //发送http请求
             /*String remoteUrl = selectedServiceMetaInfo.getServiceAddress();
             HttpResponse httpResponse = HttpRequest.post(remoteUrl)
                     .body(bodyBytes)

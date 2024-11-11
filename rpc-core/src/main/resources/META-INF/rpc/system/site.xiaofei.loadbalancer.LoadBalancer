@@ -1,0 +1,3 @@
+consistentHash=site.xiaofei.loadbalancer.RandomLoadBalancer
+randomLoad=site.xiaofei.loadbalancer.ConsistentHashLoadBalancer
+roundRobin=site.xiaofei.loadbalancer.RoundRobinLoadBalancer
