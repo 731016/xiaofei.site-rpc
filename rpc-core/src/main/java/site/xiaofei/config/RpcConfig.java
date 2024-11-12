@@ -1,7 +1,9 @@
 package site.xiaofei.config;
 
 import lombok.Data;
+import site.xiaofei.fault.retry.RetryStrategyKeys;
 import site.xiaofei.loadbalancer.LoadBalancerKeys;
+import site.xiaofei.registry.Registry;
 import site.xiaofei.serializer.SerializerKeys;
 
 /**
@@ -51,4 +53,9 @@ public class RpcConfig {
      * 负载均衡器
      */
     private String loadBalancer = LoadBalancerKeys.ROUND_ROBIN;
+
+    /**
+     * 重试策略
+     */
+    private String retryStrategy = RetryStrategyKeys.NO;
 }

@@ -64,6 +64,7 @@ public class VertxTcpClient {
                 result -> {
                     if (!result.succeeded()) {
                         log.error("failed to connect to tcp server");
+                        responseFuture.completeExceptionally(new RuntimeException("failed to connect to tcp server"));
                         return;
                     }
                     NetSocket socket = result.result();
@@ -99,6 +100,7 @@ public class VertxTcpClient {
                 });
         RpcResponse rpcResponse = responseFuture.get();
         netClient.close();
+        int i= 1/0;
         return rpcResponse;
     }
 }

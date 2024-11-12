@@ -1,0 +1,2 @@
+no=site.xiaofei.fault.retry.NoRetryStrategy
+fixedInterval=site.xiaofei.fault.retry.FixedIntervalRetryStrategy

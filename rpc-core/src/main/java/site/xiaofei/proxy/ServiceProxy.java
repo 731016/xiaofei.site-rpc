@@ -11,6 +11,8 @@ import io.vertx.core.net.NetSocket;
 import site.xiaofei.RpcApplication;
 import site.xiaofei.config.RpcConfig;
 import site.xiaofei.constant.RpcConstant;
+import site.xiaofei.fault.retry.RetryStrategy;
+import site.xiaofei.fault.retry.RetryStrategyFactory;
 import site.xiaofei.loadbalancer.LoadBalancer;
 import site.xiaofei.loadbalancer.LoadBalancerFactory;
 import site.xiaofei.model.RpcRequest;
@@ -78,16 +80,22 @@ public class ServiceProxy implements InvocationHandler {
             System.out.println("获取节点：" + selectedServiceMetaInfo);
 
             //发送http请求
-            /*String remoteUrl = selectedServiceMetaInfo.getServiceAddress();
-            HttpResponse httpResponse = HttpRequest.post(remoteUrl)
-                    .body(bodyBytes)
-                    .execute();
-            resultBytes = httpResponse.bodyBytes();
-            RpcResponse rpcResponse = serializer.deserializer(resultBytes, RpcResponse.class);
+            /*RetryStrategy retryStrategy = RetryStrategyFactory.getInstance(rpcConfig.getRetryStrategy());
+            RpcResponse rpcResponse = retryStrategy.doRetry(() -> {
+                byte[] bodyBytes = serializer.serializer(rpcRequest);
+                byte[] resultBytes;
+                String remoteUrl = selectedServiceMetaInfo.getServiceAddress();
+                HttpResponse httpResponse = HttpRequest.post(remoteUrl)
+                        .body(bodyBytes)
+                        .execute();
+                resultBytes = httpResponse.bodyBytes();
+                return serializer.deserializer(resultBytes, RpcResponse.class);
+            });
             return rpcResponse.getData();*/
 
             //发送tcp请求
-            RpcResponse rpcResponse = VertxTcpClient.doRequest(rpcRequest, selectedServiceMetaInfo);
+            RetryStrategy retryStrategy = RetryStrategyFactory.getInstance(rpcConfig.getRetryStrategy());
+            RpcResponse rpcResponse = retryStrategy.doRetry(()-> VertxTcpClient.doRequest(rpcRequest, selectedServiceMetaInfo));
             return rpcResponse.getData();
         } catch (Exception e) {
             throw new RuntimeException("调用失败");
