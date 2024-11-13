@@ -2,6 +2,7 @@ package site.xiaofei.config;
 
 import lombok.Data;
 import site.xiaofei.fault.retry.RetryStrategyKeys;
+import site.xiaofei.fault.tolerant.TolerantStrategyKeys;
 import site.xiaofei.loadbalancer.LoadBalancerKeys;
 import site.xiaofei.registry.Registry;
 import site.xiaofei.serializer.SerializerKeys;
@@ -58,4 +59,9 @@ public class RpcConfig {
      * 重试策略
      */
     private String retryStrategy = RetryStrategyKeys.NO;
+
+    /**
+     * 容错策略
+     */
+    private String tolerantStrategy = TolerantStrategyKeys.FAIL_FAST;
 }

@@ -1,0 +1,4 @@
+failBack=site.xiaofei.fault.tolerant.FailBackTolerantStrategy
+failFast=site.xiaofei.fault.tolerant.FailFastTolerantStrategy
+failOver=site.xiaofei.fault.tolerant.FailOverTolerantStrategy
+failSafe=site.xiaofei.fault.tolerant.FailSafeTolerantStrategy

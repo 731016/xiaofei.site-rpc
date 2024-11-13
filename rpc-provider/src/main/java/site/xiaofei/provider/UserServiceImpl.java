@@ -14,8 +14,8 @@ public class UserServiceImpl implements UserService {
         if (user == null){
             return null;
         }
-        int i = 1/0;
         System.out.println(String.format("用户名：%s",user.getName()));
+        int i = 1/0;
         return user;
     }
 }
