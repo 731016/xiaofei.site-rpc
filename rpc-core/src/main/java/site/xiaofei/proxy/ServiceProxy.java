@@ -102,6 +102,8 @@ public class ServiceProxy implements InvocationHandler {
             TolerantStrategy tolerantStrategy = TolerantStrategyFactory.getInstance(rpcConfig.getTolerantStrategy());
             Map<String, Object> requestTolerantParamMap = new HashMap<>();
             requestTolerantParamMap.put("rpcRequest",rpcRequest);
+            requestTolerantParamMap.put("selectedServiceMetaInfo",selectedServiceMetaInfo);
+            requestTolerantParamMap.put("serviceMetaInfoList",serviceMetaInfoList);
             rpcResponse = tolerantStrategy.doTolerant(requestTolerantParamMap, e);
         }
         return rpcResponse.getData();
