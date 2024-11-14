@@ -1,10 +1,12 @@
 package site.xiaofei.provider;
 
 import site.xiaofei.RpcApplication;
+import site.xiaofei.bootstrap.ProviderBootstrap;
 import site.xiaofei.common.service.UserService;
 import site.xiaofei.config.RegistryConfig;
 import site.xiaofei.config.RpcConfig;
 import site.xiaofei.model.ServiceMetaInfo;
+import site.xiaofei.model.ServiceRegisterInfo;
 import site.xiaofei.registry.LocalRegistry;
 import site.xiaofei.registry.Registry;
 import site.xiaofei.registry.RegistryFactory;
@@ -12,6 +14,8 @@ import site.xiaofei.server.HttpServer;
 import site.xiaofei.server.VertxHttpServer;
 import site.xiaofei.server.tcp.VertxTcpServer;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -21,7 +25,7 @@ import java.util.concurrent.ExecutionException;
  */
 public class ProviderExample {
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         //rpc框架初始化
         RpcApplication.init();
 
@@ -50,5 +54,13 @@ public class ProviderExample {
         //启动tcp服务
         VertxTcpServer tcpServer = new VertxTcpServer();
         tcpServer.doStart(RpcApplication.getRpcConfig().getServerPort());
+    }*/
+
+    public static void main(String[] args) {
+        List<ServiceRegisterInfo<?>> serviceRegisterInfoList = new ArrayList<>();
+        ServiceRegisterInfo<UserServiceImpl> serviceRegisterInfo = new ServiceRegisterInfo<>(UserService.class.getName(), UserServiceImpl.class);
+        serviceRegisterInfoList.add(serviceRegisterInfo);
+
+        ProviderBootstrap.init(serviceRegisterInfoList);
     }
 }

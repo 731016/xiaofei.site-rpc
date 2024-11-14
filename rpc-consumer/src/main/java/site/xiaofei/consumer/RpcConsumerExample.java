@@ -1,5 +1,6 @@
 package site.xiaofei.consumer;
 
+import site.xiaofei.bootstrap.ConsumerBootstrap;
 import site.xiaofei.common.model.User;
 import site.xiaofei.common.service.UserService;
 import site.xiaofei.proxy.ServiceProxyFactory;
@@ -11,7 +12,7 @@ import site.xiaofei.proxy.ServiceProxyFactory;
  */
 public class RpcConsumerExample {
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         //静态代理
 //        UserService userService = new UserServiceProxy();
         //jdk动态代理
@@ -27,5 +28,19 @@ public class RpcConsumerExample {
         }
 //        short number = userService.getMockNumber();
 //        System.out.println(number);
+    }*/
+
+    public static void main(String[] args) {
+        ConsumerBootstrap.init();
+
+        UserService userService = ServiceProxyFactory.getProxy(UserService.class);
+        User user = new User();
+        user.setName("土澳菲");
+        User resultUser = userService.getUser(user);
+        if (resultUser != null){
+            System.out.println(resultUser.getName());
+        }else{
+            System.out.println("user is null!");
+        }
     }
 }
